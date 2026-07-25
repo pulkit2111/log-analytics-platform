@@ -1,5 +1,11 @@
 package com.pulkit.log_analytics_platform.controller;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,20 +25,23 @@ import lombok.AllArgsConstructor;
 public class LogController {
   private LogService logService;
 
-  @GetMapping("/getAllLogs")
-  public ResponseEntity<?> getAllLogs() {
-    return ResponseEntity.ok(logService.getAllLogs());
+  @GetMapping("/searchLogs")
+  public ResponseEntity<?> searchLogs(
+      @RequestParam(required = false) String service,
+      @RequestParam(required = false) Log.LogLevel level,
+      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startTime,
+      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endTime,
+      @RequestParam(required = false) String keyword,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "20") int size) {
+    Page<Log> result = logService.searchLogs(service, level, startTime, endTime, keyword, page, size);
+    return ResponseEntity.ok(result);
   }
 
-  @GetMapping("/getLogs")
-  public ResponseEntity<?> getLogsBySource(@RequestParam("source") String source) {
-    return ResponseEntity.ok(logService.getLogsBySource(source));
-  }
-
-  @PostMapping("/addLog")
-  public ResponseEntity<?> addLog(@RequestBody Log log) {
-    logService.addLog(log);
-    return ResponseEntity.ok(log);
+  @PostMapping("/addLogs")
+  public ResponseEntity<?> addLogs(@RequestBody List<Log> logs) {
+    logService.addLogs(logs);
+    return ResponseEntity.ok(Map.of("inserted", logs.size()));
   }
 
 }
