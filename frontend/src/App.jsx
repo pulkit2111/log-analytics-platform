@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
+import "./pages/Dashboard.css";
 import Dashboard from "./pages/Dashboard";
+import Sidebar from "./components/Sidebar"
 import { THEME_VARS } from "./constants/theme";
-import { Sidebar } from "lucide-react";
 
 function App() {
   return (

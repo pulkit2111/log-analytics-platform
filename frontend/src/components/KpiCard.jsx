@@ -3,35 +3,14 @@ import { Card } from "./Card";
 
 export function KpiCard({ label, value, unit, icon: Icon, tint }) {
   return (
-    <Card className="flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <span
-          className="text-xs uppercase tracking-wider"
-          style={{ color: COLORS.muted }}
-        >
-          {label}
-        </span>
-        <Icon
-          size={16}
-          strokeWidth={1.8}
-          style={{ color: tint || COLORS.muted }}
-        />
+    <Card className="kpi-card">
+      <div className="kpi-card-header">
+        <span className="card-label">{label}</span>
+        <Icon size={16} strokeWidth={1.8} color={tint || COLORS.muted} />
       </div>
-      <div className="flex items-baseline gap-1.5">
-        <span
-          className="text-2xl"
-          style={{
-            fontFamily: "'IBM Plex Mono', monospace",
-            color: COLORS.text,
-          }}
-        >
-          {value}
-        </span>
-        {unit && (
-          <span className="text-xs" style={{ color: COLORS.muted }}>
-            {unit}
-          </span>
-        )}
+      <div className="kpi-value-row">
+        <span className="kpi-value">{value}</span>
+        {unit && <span className="kpi-unit">{unit}</span>}
       </div>
     </Card>
   );

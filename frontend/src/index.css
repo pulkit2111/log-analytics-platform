@@ -1,3 +1,30 @@
-body{
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  /* deliberately no max-width, no margin: auto, no text-align,
+     no place-items — those are what squeeze/center Vite's default page */
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
 }
