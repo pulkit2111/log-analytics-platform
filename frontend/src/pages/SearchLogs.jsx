@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
-import '../Dashboard.css'
+import "../Dashboard.css";
 
 import { SEVERITY_ORDER } from "../constants/theme";
 import { Card } from "../components/Card";
 import { SeverityBadge } from "../components/SeverityBadge";
 import { searchLogs } from "../api/logApi";
+import { getDefaultPageSize } from "../lib/preferences";
 
-const EMPTY_FILTERS = { service: "", level: "", startTime: "", endTime: "", keyword: "" };
+const EMPTY_FILTERS = {
+  service: "",
+  level: "",
+  startTime: "",
+  endTime: "",
+  keyword: "",
+};
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
 
 // datetime-local inputs give a value like "2026-07-26T14:30" with no
@@ -22,7 +29,7 @@ export default function SearchLogs() {
   const [draftFilters, setDraftFilters] = useState(EMPTY_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState(EMPTY_FILTERS);
   const [page, setPage] = useState(0);
-  const [size, setSize] = useState(20);
+  const [size, setSize] = useState(getDefaultPageSize());
 
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -98,7 +105,11 @@ export default function SearchLogs() {
 
           <div className="field">
             <label htmlFor="level">Level</label>
-            <select id="level" value={draftFilters.level} onChange={(e) => handleFieldChange("level", e.target.value)}>
+            <select
+              id="level"
+              value={draftFilters.level}
+              onChange={(e) => handleFieldChange("level", e.target.value)}
+            >
               <option value="">Any</option>
               {SEVERITY_ORDER.map((level) => (
                 <option key={level} value={level}>
@@ -141,7 +152,10 @@ export default function SearchLogs() {
 
           <div className="filter-actions">
             <button type="submit" className="btn btn-primary">
-              <Search size={14} style={{ marginRight: "0.375rem", verticalAlign: "-2px" }} />
+              <Search
+                size={14}
+                style={{ marginRight: "0.375rem", verticalAlign: "-2px" }}
+              />
               Search
             </button>
             <button type="button" className="btn" onClick={handleReset}>
@@ -154,7 +168,9 @@ export default function SearchLogs() {
       {/* results */}
       <Card>
         {loading && <div className="state-message">Loading logs…</div>}
-        {error && <div className="state-message error">Couldn't load logs: {error}</div>}
+        {error && (
+          <div className="state-message error">Couldn't load logs: {error}</div>
+        )}
 
         {!loading && !error && result && (
           <>
@@ -186,7 +202,9 @@ export default function SearchLogs() {
                       {log.message}
                     </td>
                     <td className="mono-muted">{log.source}</td>
-                    <td className="mono-muted">{new Date(log.timeStamp).toLocaleString()}</td>
+                    <td className="mono-muted">
+                      {new Date(log.timeStamp).toLocaleString()}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -194,7 +212,8 @@ export default function SearchLogs() {
 
             <div className="pagination">
               <span>
-                Page {result.pageNumber + 1} of {Math.max(result.totalPages, 1)} — {result.totalElements.toLocaleString()} total logs
+                Page {result.pageNumber + 1} of {Math.max(result.totalPages, 1)}{" "}
+                — {result.totalElements.toLocaleString()} total logs
               </span>
               <div className="pagination-controls">
                 <select
@@ -211,10 +230,18 @@ export default function SearchLogs() {
                     </option>
                   ))}
                 </select>
-                <button className="page-btn" disabled={result.pageNumber === 0} onClick={() => setPage((p) => p - 1)}>
+                <button
+                  className="page-btn"
+                  disabled={result.pageNumber === 0}
+                  onClick={() => setPage((p) => p - 1)}
+                >
                   Prev
                 </button>
-                <button className="page-btn" disabled={result.last} onClick={() => setPage((p) => p + 1)}>
+                <button
+                  className="page-btn"
+                  disabled={result.last}
+                  onClick={() => setPage((p) => p + 1)}
+                >
                   Next
                 </button>
               </div>

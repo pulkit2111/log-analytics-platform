@@ -30,10 +30,10 @@ import { SeverityBadge } from "../components/SeverityBadge";
 import { BarTooltip } from "../components/BarToolTip";
 import { ChartToolTip } from "../components/ChartToolTip";
 import { useDashboardData } from "../hooks/useDashboardData";
+import { getDefaultRangeHours } from "../lib/preferences";
 
-// ---------- main dashboard ----------
 export default function Dashboard() {
-  const [rangeHours, setRangeHours] = useState(24);
+  const [rangeHours, setRangeHours] = useState(getDefaultRangeHours());
   const [rangeOpen, setRangeOpen] = useState(false);
   const { data, loading, error } = useDashboardData(rangeHours);
 

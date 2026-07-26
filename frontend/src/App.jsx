@@ -5,6 +5,7 @@ import Sidebar from "./components/Sidebar";
 import { THEME_VARS } from "./constants/theme";
 import SearchLogs from "./pages/SearchLogs";
 import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings.jsx";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
               element={<Analytics title="Analytics" />}
             />
           }
-          {/* // <Route path="/settings" element={<ComingSoon title="Settings" />} */}
+          <Route path="/settings" element={<Settings title="Settings" />} />
         </Routes>
       </main>
     </div>
