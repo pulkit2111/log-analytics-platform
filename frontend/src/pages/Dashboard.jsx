@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./Dashboard.css";
+import "../Dashboard.css";
 import {
   ResponsiveContainer,
   Line,

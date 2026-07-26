@@ -1,8 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import "./pages/Dashboard.css";
-import Dashboard from "./pages/Dashboard";
-import Sidebar from "./components/Sidebar"
+import "./Dashboard.css";
+import Dashboard from "./pages/Dashboard.jsx";
+import Sidebar from "./components/Sidebar";
 import { THEME_VARS } from "./constants/theme";
+import SearchLogs from "./pages/SearchLogs";
+import Analytics from "./pages/Analytics";
 
 function App() {
   return (
@@ -11,15 +13,14 @@ function App() {
       <main className="main">
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          {/* <Route
-              path="/search"
-              element={<ComingSoon title="Search Logs" />}
-            />
+          <Route path="/search" element={<SearchLogs title="Search Logs" />} />
+          {
             <Route
               path="/analytics"
-              element={<ComingSoon title="Analytics" />}
+              element={<Analytics title="Analytics" />}
             />
-            <Route path="/settings" element={<ComingSoon title="Settings" />} /> */}
+          }
+          {/* // <Route path="/settings" element={<ComingSoon title="Settings" />} */}
         </Routes>
       </main>
     </div>

@@ -43,4 +43,3 @@ export const THEME_VARS = {
   "--severity-error": SEVERITY.ERROR,
   "--severity-fatal": SEVERITY.FATAL,
 };
-

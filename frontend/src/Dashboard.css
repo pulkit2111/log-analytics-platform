@@ -1,7 +1,7 @@
 /* ============================================================
    Font imports
    ============================================================ */
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
 
 /* ============================================================
    Layout shell
@@ -16,7 +16,7 @@
   min-height: 720px;
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* ============================================================
@@ -49,7 +49,7 @@
 }
 
 .brand-name {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 600;
   font-size: 0.875rem;
   letter-spacing: -0.01em;
@@ -63,9 +63,7 @@
   border-radius: 0.5rem;
   cursor: pointer;
   color: var(--color-muted);
-  transition:
-    background-color 0.15s,
-    color 0.15s;
+  transition: background-color 0.15s, color 0.15s;
 }
 
 .nav-item.active {
@@ -79,7 +77,7 @@
 }
 
 .nav-item span {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 0.875rem;
 }
 
@@ -103,7 +101,7 @@
 }
 
 .page-title {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
 }
@@ -173,7 +171,7 @@
 /* reusable text style for numeric / secondary data everywhere:
    counts, timestamps, service names next to log messages */
 .mono-muted {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: 'IBM Plex Mono', monospace;
   color: var(--color-muted);
 }
 
@@ -212,15 +210,9 @@
   display: inline-block;
 }
 
-.legend-dot--normal {
-  background-color: var(--color-accent);
-}
-.legend-dot--elevated {
-  background-color: var(--severity-warning);
-}
-.legend-dot--critical {
-  background-color: var(--severity-error);
-}
+.legend-dot--normal { background-color: var(--color-accent); }
+.legend-dot--elevated { background-color: var(--severity-warning); }
+.legend-dot--critical { background-color: var(--severity-error); }
 
 .pulse-strip {
   display: flex;
@@ -270,7 +262,7 @@
 }
 
 .kpi-value {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 1.5rem;
   color: var(--color-text);
 }
@@ -306,7 +298,7 @@
   background-color: var(--color-surface-alt);
   border: 1px solid var(--color-border);
   color: var(--color-text);
-  font-family: "IBM Plex Mono", monospace;
+  font-family: 'IBM Plex Mono', monospace;
 }
 
 .chart-tooltip-label {
@@ -354,7 +346,7 @@
   border-radius: 9999px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: 'IBM Plex Mono', monospace;
   /* color, background-color and border are inline — they key
      off SEVERITY[level], which varies per badge instance */
 }
@@ -396,6 +388,140 @@
 }
 
 /* ============================================================
+   Search Logs page
+   ============================================================ */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.field label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+
+.field input,
+.field select {
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+  grid-column: 1 / -1;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-alt);
+  color: var(--color-text);
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+  font-weight: 600;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.results-table thead th {
+  text-align: left;
+  padding: 0.625rem 0.75rem;
+  color: var(--color-muted);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.results-table tbody td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.results-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.results-table tbody tr:hover {
+  background-color: var(--color-surface-alt);
+}
+
+.table-message-cell {
+  max-width: 420px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.page-btn {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-alt);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.8125rem;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ============================================================
    Loading / error states
    ============================================================ */
 .state-message {
@@ -413,11 +539,35 @@
    Animations
    ============================================================ */
 @keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.4;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ============================================================
+   Analytics page — bigger trend chart, pie legend
+   ============================================================ */
+.chart-lg {
+  height: 20rem;
+  margin-top: 0.75rem;
+}
+
+.pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.pie-swatch {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 0.125rem;
+  flex-shrink: 0;
 }
