@@ -5,6 +5,8 @@ package com.pulkit.log_analytics_platform.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import org.springframework.boot.cache.autoconfigure.RedisCacheManagerBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -17,22 +19,34 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig {
 
-    @Bean
-    @SuppressWarnings({ "removal", "deprecation" })
-    public RedisCacheConfiguration redisCacheConfiguration() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        mapper.activateDefaultTyping(
-                mapper.getPolymorphicTypeValidator(),
-                ObjectMapper.DefaultTyping.EVERYTHING);
+        @Bean
+        @SuppressWarnings({ "removal", "deprecation" })
+        public RedisCacheConfiguration redisCacheConfiguration() {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                mapper.activateDefaultTyping(
+                                mapper.getPolymorphicTypeValidator(),
+                                ObjectMapper.DefaultTyping.EVERYTHING);
 
-        RedisSerializer<Object> serializer = new GenericJackson2JsonRedisSerializer(mapper);
+                RedisSerializer<Object> serializer = new GenericJackson2JsonRedisSerializer(mapper);
 
-        return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10))
-                .disableCachingNullValues()
-                .serializeValuesWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(serializer));
-    }
+                return RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.ofMinutes(10))
+                                .disableCachingNullValues()
+                                .serializeValuesWith(
+                                                RedisSerializationContext.SerializationPair.fromSerializer(serializer));
+        }
+
+        @Bean
+        public RedisCacheManagerBuilderCustomizer analyticsCacheTtlCustomizer(
+                        RedisCacheConfiguration redisCacheConfiguration) {
+                RedisCacheConfiguration shortTtl = redisCacheConfiguration.entryTtl(Duration.ofSeconds(30));
+
+                return builder -> builder
+                                .withCacheConfiguration("severityDistribution", shortTtl)
+                                .withCacheConfiguration("topServices", shortTtl)
+                                .withCacheConfiguration("logTrend", shortTtl)
+                                .withCacheConfiguration("errorRate", shortTtl);
+        };
 }

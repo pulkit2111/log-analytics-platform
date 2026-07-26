@@ -40,7 +40,8 @@ public class LogService {
     return LogPageResponse.from(result);
   }
 
-  @CacheEvict(value = "searchLogs", allEntries = true)
+  @CacheEvict(value = { "searchLogs", "severityDistribution", "topServices", "logTrend",
+      "errorRate" }, allEntries = true)
   public void addLogs(List<Log> logs) {
     logRepository.saveAll(logs);
   }

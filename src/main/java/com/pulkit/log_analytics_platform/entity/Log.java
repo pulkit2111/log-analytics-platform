@@ -9,13 +9,23 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "log", indexes = {
+    @Index(name = "idx_log_timestamp", columnList = "timeStamp"),
+    @Index(name = "idx_log_level_timestamp", columnList = "logLevel, timeStamp"),
+    @Index(name = "idx_log_service_level", columnList = "serviceName, logLevel"),
+    @Index(name = "idx_log_source", columnList = "source")
+})
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -23,25 +33,11 @@ import lombok.NoArgsConstructor;
 public class Log {
 
   public enum LogLevel {
-    DEBUG(1),
-    INFO(2),
-    WARNING(3),
-    ERROR(4),
-    FATAL(5);
-
-    private final int priority;
-
-    LogLevel(int priority) {
-      this.priority = priority;
-    }
-
-    public int getPriority() {
-      return priority;
-    }
-
-    public boolean isGreaterOrEqual(LogLevel other) {
-      return this.priority >= other.priority;
-    }
+    DEBUG,
+    INFO,
+    WARNING,
+    ERROR,
+    FATAL;
   }
 
   @Id
@@ -57,6 +53,8 @@ public class Log {
   }
 
   private String serviceName;
+
+  @Enumerated(EnumType.STRING)
   private LogLevel logLevel;
   private String message;
   private String source;
