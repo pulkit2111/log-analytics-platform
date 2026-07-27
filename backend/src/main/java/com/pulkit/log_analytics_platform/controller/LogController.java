@@ -17,6 +17,7 @@ import com.pulkit.log_analytics_platform.dto.LogPageResponse;
 import com.pulkit.log_analytics_platform.entity.Log;
 import com.pulkit.log_analytics_platform.service.LogService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -24,6 +25,8 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/api")
 public class LogController {
   private LogService logService;
+
+  @Operation(summary = "Search logs with optional filters", description = "Supports filtering by service, level, time range, and keyword, with pagination")
 
   @GetMapping("/searchLogs")
   public ResponseEntity<?> searchLogs(

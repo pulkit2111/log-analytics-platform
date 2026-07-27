@@ -16,8 +16,6 @@ body {
 
 #root {
   min-height: 100vh;
-  /* deliberately no max-width, no margin: auto, no text-align,
-     no place-items — those are what squeeze/center Vite's default page */
 }
 
 a {
