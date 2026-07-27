@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import "../Dashboard.css";
 
 import { SEVERITY_ORDER } from "../constants/theme";
 import { Card } from "../components/Card";
 import { SeverityBadge } from "../components/SeverityBadge";
-import { searchLogs } from "../api/logApi";
+import { CacheMetricsBadge } from "../components/CacheMetricsBadge";
+import { searchLogsWithMetrics } from "../api/logApi";
 import { getDefaultPageSize } from "../lib/preferences";
 
 const EMPTY_FILTERS = {
@@ -32,15 +32,17 @@ export default function SearchLogs() {
   const [size, setSize] = useState(getDefaultPageSize());
 
   const [result, setResult] = useState(null);
+  const [metrics, setMetrics] = useState(null);
+  const [comparison, setComparison] = useState(null); // { cached, fresh } — populated by "Compare" button
+  const [comparing, setComparing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    // setLoading(true);
-    // setError(null);
-
-    searchLogs({
+  // Memoized so this is only a new object reference when the filters/page/size
+  // actually change — otherwise it'd be new every render, making the effect
+  // below re-run every render regardless of whether anything real changed.
+  const currentParams = useMemo(
+    () => ({
       service: appliedFilters.service || undefined,
       level: appliedFilters.level || undefined,
       keyword: appliedFilters.keyword || undefined,
@@ -48,9 +50,28 @@ export default function SearchLogs() {
       endTime: toIsoOrUndefined(appliedFilters.endTime),
       page,
       size,
-    })
-      .then((res) => {
-        if (!cancelled) setResult(res);
+    }),
+    [appliedFilters, page, size],
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    // Resetting these synchronously is necessary here: unlike the dashboard's
+    // range picker, remounting this component on filter change would wipe out
+    // draftFilters/page/size state that needs to persist. There's no
+    // derive-only alternative for a "reset then refetch on param change"
+    // pattern, so this is a deliberate, scoped exception to the lint rule.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLoading(true);
+    setError(null);
+    setComparison(null);
+
+    searchLogsWithMetrics(currentParams)
+      .then(({ data, metrics }) => {
+        if (cancelled) return;
+        setResult(data);
+        setMetrics(metrics);
       })
       .catch((err) => {
         if (!cancelled) setError(err.message || "Failed to load logs");
@@ -62,7 +83,29 @@ export default function SearchLogs() {
     return () => {
       cancelled = true;
     };
-  }, [appliedFilters, page, size]);
+  }, [currentParams]);
+
+  // Runs the exact same query twice — once allowed to hit the cache,
+  // once forced to bypass it — so you can see cached vs. uncached
+  // timing for the identical query side by side.
+  async function handleCompare() {
+    setComparing(true);
+    try {
+      const cached = await searchLogsWithMetrics({
+        ...currentParams,
+        bypassCache: false,
+      });
+      const fresh = await searchLogsWithMetrics({
+        ...currentParams,
+        bypassCache: true,
+      });
+      setComparison({ cached: cached.metrics, fresh: fresh.metrics });
+    } catch (err) {
+      setError(err.message || "Comparison failed");
+    } finally {
+      setComparing(false);
+    }
+  }
 
   function handleFieldChange(field, value) {
     setDraftFilters((f) => ({ ...f, [field]: value }));
@@ -174,7 +217,26 @@ export default function SearchLogs() {
 
         {!loading && !error && result && (
           <>
-            <table className="results-table">
+            <div className="metrics-row">
+              <CacheMetricsBadge metrics={metrics} />
+              <button
+                className="btn"
+                onClick={handleCompare}
+                disabled={comparing}
+              >
+                {comparing ? "Comparing…" : "Compare cached vs. fresh"}
+              </button>
+            </div>
+
+            {comparison && (
+              <div className="compare-row">
+                <CacheMetricsBadge metrics={comparison.cached} />
+                <span className="mono-muted">vs</span>
+                <CacheMetricsBadge metrics={comparison.fresh} />
+              </div>
+            )}
+
+            <table className="results-table" style={{ marginTop: "0.75rem" }}>
               <thead>
                 <tr>
                   <th style={{ width: "90px" }}>Level</th>

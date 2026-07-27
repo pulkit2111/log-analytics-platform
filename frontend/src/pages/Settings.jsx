@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card } from "../components/Card";
-import { searchLogs } from "../api/logApi";
+import { searchLogs, clearCache } from "../api/logApi";
 import {
   getDefaultPageSize,
   setDefaultPageSize,
@@ -22,6 +22,21 @@ export default function Settings() {
   const [saved, setSaved] = useState(false);
 
   const [connection, setConnection] = useState({ state: "idle" }); // idle | checking | ok | error
+  const [clearing, setClearing] = useState(false);
+  const [cleared, setCleared] = useState(false);
+
+  async function handleClearCache() {
+    setClearing(true);
+    try {
+      await clearCache();
+      setCleared(true);
+      setTimeout(() => setCleared(false), 2500);
+    } catch (err) {
+      alert(`Failed to clear cache: ${err.message}`);
+    } finally {
+      setClearing(false);
+    }
+  }
 
   function handleSave(e) {
     e.preventDefault();
@@ -73,6 +88,21 @@ export default function Settings() {
             {connection.message || "Could not reach the backend"}
           </div>
         )}
+      </Card>
+
+      {/* cache */}
+      <Card>
+        <span className="card-label">Cache</span>
+        <p className="mono-muted" style={{ marginTop: "0.75rem", marginBottom: "0.75rem" }}>
+          Clear this if data was changed directly in the database (e.g. a seeding script) —
+          those changes don't trigger automatic cache eviction.
+        </p>
+        <div className="metrics-row">
+          <button className="btn btn-warn" onClick={handleClearCache} disabled={clearing}>
+            {clearing ? "Clearing…" : "Clear Cache"}
+          </button>
+          {cleared && <span className="state-message success" style={{ padding: 0 }}>Cache cleared</span>}
+        </div>
       </Card>
 
       {/* preferences */}

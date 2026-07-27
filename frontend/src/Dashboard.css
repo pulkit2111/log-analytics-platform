@@ -1,7 +1,7 @@
 /* ============================================================
    Font imports
    ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap");
 
 /* ============================================================
    Layout shell
@@ -16,7 +16,7 @@
   min-height: 720px;
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* ============================================================
@@ -49,7 +49,7 @@
 }
 
 .brand-name {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 600;
   font-size: 0.875rem;
   letter-spacing: -0.01em;
@@ -63,7 +63,9 @@
   border-radius: 0.5rem;
   cursor: pointer;
   color: var(--color-muted);
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 
 .nav-item.active {
@@ -77,7 +79,7 @@
 }
 
 .nav-item span {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 0.875rem;
 }
 
@@ -101,7 +103,7 @@
 }
 
 .page-title {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
 }
@@ -171,7 +173,7 @@
 /* reusable text style for numeric / secondary data everywhere:
    counts, timestamps, service names next to log messages */
 .mono-muted {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: "IBM Plex Mono", monospace;
   color: var(--color-muted);
 }
 
@@ -210,9 +212,15 @@
   display: inline-block;
 }
 
-.legend-dot--normal { background-color: var(--color-accent); }
-.legend-dot--elevated { background-color: var(--severity-warning); }
-.legend-dot--critical { background-color: var(--severity-error); }
+.legend-dot--normal {
+  background-color: var(--color-accent);
+}
+.legend-dot--elevated {
+  background-color: var(--severity-warning);
+}
+.legend-dot--critical {
+  background-color: var(--severity-error);
+}
 
 .pulse-strip {
   display: flex;
@@ -262,7 +270,7 @@
 }
 
 .kpi-value {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: "IBM Plex Mono", monospace;
   font-size: 1.5rem;
   color: var(--color-text);
 }
@@ -298,7 +306,7 @@
   background-color: var(--color-surface-alt);
   border: 1px solid var(--color-border);
   color: var(--color-text);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: "IBM Plex Mono", monospace;
 }
 
 .chart-tooltip-label {
@@ -346,7 +354,7 @@
   border-radius: 9999px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: "IBM Plex Mono", monospace;
   /* color, background-color and border are inline — they key
      off SEVERITY[level], which varies per badge instance */
 }
@@ -539,8 +547,13 @@
    Animations
    ============================================================ */
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* ============================================================
@@ -608,4 +621,73 @@
 
 .state-message.success {
   color: var(--color-accent);
+}
+
+/* ============================================================
+   Cache metrics badge
+   ============================================================ */
+.cache-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.cache-badge-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+}
+
+.cache-badge-sep {
+  opacity: 0.5;
+}
+
+.cache-badge--hit {
+  color: var(--color-accent);
+  background-color: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+.cache-badge--hit .cache-badge-dot {
+  background-color: var(--color-accent);
+}
+
+.cache-badge--miss {
+  color: var(--severity-warning);
+  background-color: color-mix(
+    in srgb,
+    var(--severity-warning) 12%,
+    transparent
+  );
+}
+.cache-badge--miss .cache-badge-dot {
+  background-color: var(--severity-warning);
+}
+
+.compare-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+  
+.metrics-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cache-badge {
+  min-width: 148px;
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-warn {
+  border-color: var(--severity-warning);
+  color: var(--severity-warning);
 }

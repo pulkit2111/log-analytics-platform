@@ -15,6 +15,7 @@ import {
 
 import { COLORS, SEVERITY, SEVERITY_ORDER } from "../constants/theme";
 import { Card } from "../components/Card";
+import { CacheMetricsBadge } from "../components/CacheMetricsBadge";
 import { ChartToolTip } from "../components/ChartToolTip";
 import { useAnalyticsData } from "../hooks/useAnalyticsData";
 
@@ -68,7 +69,11 @@ export default function Analytics() {
         <form className="filter-grid" onSubmit={handleApply}>
           <div className="field">
             <label htmlFor="granularity">Granularity</label>
-            <select id="granularity" value={granularity} onChange={(e) => setGranularity(e.target.value)}>
+            <select
+              id="granularity"
+              value={granularity}
+              onChange={(e) => setGranularity(e.target.value)}
+            >
               {GRANULARITIES.map((g) => (
                 <option key={g} value={g}>
                   {g}
@@ -79,12 +84,22 @@ export default function Analytics() {
 
           <div className="field">
             <label htmlFor="start">Start time</label>
-            <input id="start" type="datetime-local" value={startInput} onChange={(e) => setStartInput(e.target.value)} />
+            <input
+              id="start"
+              type="datetime-local"
+              value={startInput}
+              onChange={(e) => setStartInput(e.target.value)}
+            />
           </div>
 
           <div className="field">
             <label htmlFor="end">End time</label>
-            <input id="end" type="datetime-local" value={endInput} onChange={(e) => setEndInput(e.target.value)} />
+            <input
+              id="end"
+              type="datetime-local"
+              value={endInput}
+              onChange={(e) => setEndInput(e.target.value)}
+            />
           </div>
 
           <div className="filter-actions">
@@ -96,10 +111,37 @@ export default function Analytics() {
       </Card>
 
       {loading && <div className="state-message">Loading analytics…</div>}
-      {error && <div className="state-message error">Couldn't load analytics: {error}</div>}
+      {error && (
+        <div className="state-message error">
+          Couldn't load analytics: {error}
+        </div>
+      )}
 
       {!loading && !error && data && (
         <>
+          {/* query performance comparison */}
+          <Card>
+            <span className="card-label">Query Performance</span>
+            <table className="results-table" style={{ marginTop: "0.75rem" }}>
+              <thead>
+                <tr>
+                  <th>Query</th>
+                  <th>Cache Metrics</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.queryMetrics.map((q) => (
+                  <tr key={q.label}>
+                    <td>{q.label}</td>
+                    <td>
+                      <CacheMetricsBadge metrics={q.metrics} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+
           {/* trend */}
           <Card>
             <span className="card-label">Volume &amp; Error Rate</span>
@@ -107,23 +149,61 @@ export default function Analytics() {
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data.trend}>
                   <defs>
-                    <linearGradient id="analyticsVolGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={COLORS.accent} stopOpacity={0.35} />
-                      <stop offset="100%" stopColor={COLORS.accent} stopOpacity={0} />
+                    <linearGradient
+                      id="analyticsVolGrad"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="0%"
+                        stopColor={COLORS.accent}
+                        stopOpacity={0.35}
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor={COLORS.accent}
+                        stopOpacity={0}
+                      />
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke={COLORS.border} vertical={false} />
                   <XAxis
                     dataKey="bucket"
-                    tickFormatter={(v) => new Date(v).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit" })}
+                    tickFormatter={(v) =>
+                      new Date(v).toLocaleString([], {
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                      })
+                    }
                     tick={{ fill: COLORS.muted, fontSize: 11 }}
                     axisLine={{ stroke: COLORS.border }}
                     tickLine={false}
                   />
-                  <YAxis tick={{ fill: COLORS.muted, fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis
+                    tick={{ fill: COLORS.muted, fontSize: 11 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
                   <Tooltip content={<ChartToolTip />} />
-                  <Area type="monotone" dataKey="total" name="Logs" stroke={COLORS.accent} fill="url(#analyticsVolGrad)" strokeWidth={2} />
-                  <Line type="monotone" dataKey="errors" name="Errors" stroke={SEVERITY.ERROR} strokeWidth={2} dot={false} />
+                  <Area
+                    type="monotone"
+                    dataKey="total"
+                    name="Logs"
+                    stroke={COLORS.accent}
+                    fill="url(#analyticsVolGrad)"
+                    strokeWidth={2}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="errors"
+                    name="Errors"
+                    stroke={SEVERITY.ERROR}
+                    strokeWidth={2}
+                    dot={false}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -152,7 +232,8 @@ export default function Analytics() {
                       content={({ active, payload }) =>
                         active && payload?.length ? (
                           <div className="chart-tooltip">
-                            {payload[0].name}: {payload[0].value.toLocaleString()}
+                            {payload[0].name}:{" "}
+                            {payload[0].value.toLocaleString()}
                           </div>
                         ) : null
                       }
@@ -163,12 +244,22 @@ export default function Analytics() {
               <div className="pie-legend">
                 {data.severityDistribution
                   .slice()
-                  .sort((a, b) => SEVERITY_ORDER.indexOf(a.level) - SEVERITY_ORDER.indexOf(b.level))
+                  .sort(
+                    (a, b) =>
+                      SEVERITY_ORDER.indexOf(a.level) -
+                      SEVERITY_ORDER.indexOf(b.level),
+                  )
                   .map((d) => (
                     <div key={d.level} className="pie-legend-item">
-                      <span className="pie-swatch" style={{ backgroundColor: SEVERITY[d.level] }} />
+                      <span
+                        className="pie-swatch"
+                        style={{ backgroundColor: SEVERITY[d.level] }}
+                      />
                       <span className="mono-muted">{d.level}</span>
-                      <span className="mono-muted" style={{ marginLeft: "auto" }}>
+                      <span
+                        className="mono-muted"
+                        style={{ marginLeft: "auto" }}
+                      >
                         {d.count.toLocaleString()}
                       </span>
                     </div>

@@ -1,4 +1,4 @@
-import { get, post } from "./client";
+import { get, post, getWithMetrics } from "./client";
 
 // Builds a query string, skipping empty/undefined values and
 // repeating the key for array values (?levels=ERROR&levels=FATAL),
@@ -39,16 +39,32 @@ export function searchLogs({
   return get(`/searchLogs?${qs}`);
 }
 
-export function getLogBySource(source) {
-  return get(`/getLog?source=${encodeURIComponent(source)}`);
+// Returns { data, metrics: { hit, responseTimeMs, dataSource } }
+export function searchLogsWithMetrics({
+  service,
+  level,
+  startTime,
+  endTime,
+  keyword,
+  page = 0,
+  size = 20,
+  bypassCache = false,
+} = {}) {
+  const qs = toQueryString({
+    service,
+    level,
+    startTime,
+    endTime,
+    keyword,
+    page,
+    size,
+    bypassCache,
+  });
+  return getWithMetrics(`/searchLogs?${qs}`);
 }
 
-export function addLog(log) {
-  return post(`/addLog`, log);
-}
-
-export function addLogs(logs) {
-  return post(`/addLogs`, logs);
+export function clearCache() {
+  return post(`/cache/clear`, {});
 }
 
 // ---------- Analytics ----------
@@ -70,4 +86,42 @@ export function getLogTrend({ granularity = "hour", startTime, endTime }) {
 export function getErrorRate({ granularity = "hour", startTime, endTime }) {
   const qs = toQueryString({ granularity, startTime, endTime });
   return get(`/analytics/error-rate?${qs}`);
+}
+
+// ---------- Analytics, with cache metrics ----------
+
+export function getSeverityDistributionWithMetrics({
+  bypassCache = false,
+} = {}) {
+  const qs = toQueryString({ bypassCache });
+  return getWithMetrics(`/analytics/severity-distribution?${qs}`);
+}
+
+export function getTopServicesWithMetrics({
+  limit = 5,
+  levels,
+  bypassCache = false,
+} = {}) {
+  const qs = toQueryString({ limit, levels, bypassCache });
+  return getWithMetrics(`/analytics/top-services?${qs}`);
+}
+
+export function getLogTrendWithMetrics({
+  granularity = "hour",
+  startTime,
+  endTime,
+  bypassCache = false,
+}) {
+  const qs = toQueryString({ granularity, startTime, endTime, bypassCache });
+  return getWithMetrics(`/analytics/trend?${qs}`);
+}
+
+export function getErrorRateWithMetrics({
+  granularity = "hour",
+  startTime,
+  endTime,
+  bypassCache = false,
+}) {
+  const qs = toQueryString({ granularity, startTime, endTime, bypassCache });
+  return getWithMetrics(`/analytics/error-rate?${qs}`);
 }

@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { getSeverityDistribution, getTopServices, getLogTrend, getErrorRate } from "../api/logApi";
+import {
+  getSeverityDistributionWithMetrics,
+  getTopServicesWithMetrics,
+  getLogTrendWithMetrics,
+  getErrorRateWithMetrics,
+} from "../api/logApi";
 
 export function useAnalyticsData({ granularity, startTime, endTime }) {
   const [data, setData] = useState(null);
@@ -11,26 +16,39 @@ export function useAnalyticsData({ granularity, startTime, endTime }) {
     const params = { granularity, startTime, endTime };
 
     Promise.all([
-      getSeverityDistribution(),
-      getTopServices({ limit: 10 }), // no `levels` filter → backend defaults to all levels
-      getLogTrend(params),
-      getErrorRate(params),
+      getSeverityDistributionWithMetrics(),
+      getTopServicesWithMetrics({ limit: 10 }),
+      getLogTrendWithMetrics(params),
+      getErrorRateWithMetrics(params),
     ])
-      .then(([severityDistribution, topServices, trendRaw, errorRateRaw]) => {
+      .then(([severity, services, trendRes, errorRateRes]) => {
         if (cancelled) return;
 
-        const errorRateByBucket = new Map(errorRateRaw.map((b) => [b.bucket, b]));
-        const trend = trendRaw.map((b) => ({
+        const errorRateByBucket = new Map(
+          errorRateRes.data.map((b) => [b.bucket, b]),
+        );
+        const trend = trendRes.data.map((b) => ({
           bucket: new Date(b.bucket).getTime(),
           total: b.count,
           errors: errorRateByBucket.get(b.bucket)?.errorCount ?? 0,
           errorRate: errorRateByBucket.get(b.bucket)?.errorRate ?? 0,
         }));
 
-        setData({ severityDistribution, topServices, trend });
+        setData({
+          severityDistribution: severity.data,
+          topServices: services.data,
+          trend,
+          queryMetrics: [
+            { label: "Severity Distribution", metrics: severity.metrics },
+            { label: "Top Services", metrics: services.metrics },
+            { label: "Volume Trend", metrics: trendRes.metrics },
+            { label: "Error Rate", metrics: errorRateRes.metrics },
+          ],
+        });
       })
       .catch((err) => {
-        if (!cancelled) setError(err.message || "Failed to load analytics data");
+        if (!cancelled)
+          setError(err.message || "Failed to load analytics data");
       });
 
     return () => {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pulkit.log_analytics_platform.dto.LogPageResponse;
+import com.pulkit.log_analytics_platform.dto.TimedResult;
 import com.pulkit.log_analytics_platform.entity.Log;
 import com.pulkit.log_analytics_platform.service.LogService;
 
@@ -36,9 +37,15 @@ public class LogController {
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endTime,
       @RequestParam(required = false) String keyword,
       @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "20") int size) {
-    LogPageResponse result = logService.searchLogs(service, level, startTime, endTime, keyword, page, size);
-    return ResponseEntity.ok(result);
+      @RequestParam(defaultValue = "20") int size,
+      @RequestParam(defaultValue = "false") boolean bypassCache) {
+    TimedResult<LogPageResponse> result = logService.searchLogs(service, level, startTime, endTime, keyword, page, size,
+        bypassCache);
+    return ResponseEntity.ok()
+        .header("X-Cache-Status", result.metrics().hit() ? "HIT" : "MISS")
+        .header("X-Response-Time-Ms", String.valueOf(result.metrics().responseTimeMs()))
+        .header("X-Data-Source", result.metrics().dataSource())
+        .body(result.data());
   }
 
   @PostMapping("/addLogs")
