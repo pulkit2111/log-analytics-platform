@@ -3,7 +3,6 @@ package com.pulkit.log_analytics_platform.entity;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
@@ -44,7 +43,7 @@ public class Log {
   @GeneratedValue
   private UUID logId;
 
-  @CreatedDate
+  // @CreatedDate
   @Column(nullable = false)
   private Instant timeStamp;
 

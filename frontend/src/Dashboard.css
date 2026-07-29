@@ -674,7 +674,7 @@
   gap: 0.75rem;
   margin-top: 0.75rem;
 }
-  
+
 .metrics-row {
   display: flex;
   align-items: center;
@@ -690,4 +690,20 @@
 .btn-warn {
   border-color: var(--severity-warning);
   color: var(--severity-warning);
+}
+
+.bulk-count-input {
+  width: 110px;
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.bulk-count-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
 }

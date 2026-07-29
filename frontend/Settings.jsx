@@ -36,8 +36,8 @@ export default function Settings() {
     setGeneratingOne(true);
     setGenMessage(null);
     try {
-      const log = generateLogs(1, { incidentCount: 0 });
-      await addLogs(log);
+      const [log] = generateLogs(1, { incidentCount: 0 });
+      await addLogs([log]);
       setGenMessage("Generated 1 log");
       setTimeout(() => setGenMessage(null), 2500);
     } catch (err) {

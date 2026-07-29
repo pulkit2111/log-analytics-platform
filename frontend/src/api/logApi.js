@@ -18,6 +18,10 @@ function toQueryString(params) {
 
 // ---------- CRUD ----------
 
+export function addLogs(logs) {
+  return post(`/addLogs`, logs);
+}
+
 export function searchLogs({
   service,
   level,
