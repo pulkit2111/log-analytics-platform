@@ -117,3 +117,4 @@ Full interactive documentation via Swagger at `/swagger-ui.html`. Key endpoints:
 
 ## Notes / Known Limitations
 - Free-tier hosting involves occasional cold-start delays on the backend.
+- Used Cron Job to ping the service every 5 minutes to prevent the cold start.

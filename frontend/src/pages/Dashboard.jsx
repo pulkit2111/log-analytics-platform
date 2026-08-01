@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../Dashboard.css";
 import {
   ResponsiveContainer,
@@ -46,6 +46,26 @@ export default function Dashboard() {
   const [rangeHours, setRangeHours] = useState(getDefaultRangeHours());
   const [rangeOpen, setRangeOpen] = useState(false);
   const { data, loading, error } = useDashboardData(rangeHours);
+  const [showSlowMessage, setShowSlowMessage] = useState(false);
+  useEffect(() => {
+    if (!loading) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setShowSlowMessage(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowSlowMessage(true), 4000);
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  if (loading) {
+    return (
+      <div className="state-message">
+        {showSlowMessage
+          ? "Waking up the server — this app runs on free hosting, so a cold start can take up to a minute. Thanks for your patience!"
+          : "Loading dashboard…"}
+      </div>
+    );
+  }
 
   const rangeLabel = RANGE_LABELS[rangeHours];
 
