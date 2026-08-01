@@ -35,7 +35,20 @@ The backend uses a manual cache-aside pattern (rather than plain `@Cacheable`) s
 
 ## Screenshots
 
-_Add a few screenshots here: dashboard overview, search logs with cache badge, analytics page._
+**Dashboard**
+![Dashboard](screenshots/dashboard.png)
+
+**Search Logs — cache hit/miss visualization**
+![Search Logs](screenshots/search.png)
+
+**Analytics**
+![Analytics](screenshots/analytics.png)
+
+**Settings**
+![Settings](screenshots/settings.png)
+
+**Mobile View**
+![Mobile](screenshots/mobile.png)
 
 ## Running Locally
 
@@ -86,7 +99,7 @@ npm run dev
 Full interactive documentation via Swagger at `/swagger-ui.html`. Key endpoints:
 
 - `GET /api/searchLogs` — filtered, paginated log search
-- `POST /api/addLog` / `POST /api/addLogs` — single / bulk log ingestion
+- `POST /api/addLogs` — bulk log ingestion
 - `GET /api/analytics/severity-distribution`
 - `GET /api/analytics/top-services`
 - `GET /api/analytics/trend`
@@ -99,12 +112,8 @@ Full interactive documentation via Swagger at `/swagger-ui.html`. Key endpoints:
 .
 ├── backend/         # Spring Boot API
 ├── frontend/         # React (Vite) dashboard
-├── log-generator/    # Python bulk log seeding script
 └── docker-compose.yml
 ```
 
 ## Notes / Known Limitations
-
-- Not optimized for mobile screens yet.
-- `ddl-auto=update` is used for simplicity rather than a migration tool (Flyway/Liquibase) — fine for a project at this stage, would be worth revisiting for a production system.
-- Free-tier hosting means occasional cold-start delays on the backend.
+- Free-tier hosting involves occasional cold-start delays on the backend.
