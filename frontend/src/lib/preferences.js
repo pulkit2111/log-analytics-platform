@@ -14,7 +14,7 @@ export function setDefaultPageSize(size) {
 
 export function getDefaultRangeHours() {
   const stored = localStorage.getItem(KEYS.rangeHours);
-  return stored ? Number(stored) : 24;
+  return stored ? Number(stored) : 2160;
 }
 
 export function setDefaultRangeHours(hours) {

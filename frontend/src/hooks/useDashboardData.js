@@ -8,7 +8,9 @@ import {
 } from "../api/logApi";
 
 function granularityForRange(hours) {
-  return hours <= 24 ? "hour" : "day";
+  if (hours <= 24) return "hour";
+  if (hours <= 2160) return "day"; // up to 90 days
+  return "week"; // anything wider (e.g. "All time")
 }
 
 // Fetches everything the dashboard needs and reshapes it into the
@@ -16,11 +18,14 @@ function granularityForRange(hours) {
 // need to change how it reads `data`.
 export function useDashboardData(rangeHours) {
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const loading = data === null && error === null;
 
   useEffect(() => {
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLoading(true);
+    setError(null);
 
     const endTime = new Date();
     const startTime = new Date(endTime.getTime() - rangeHours * 3600 * 1000);
@@ -95,7 +100,7 @@ export function useDashboardData(rangeHours) {
           setError(err.message || "Failed to load dashboard data");
       })
       .finally(() => {
-        // if (!cancelled) setLoading(false);
+        if (!cancelled) setLoading(false);
       });
 
     return () => {

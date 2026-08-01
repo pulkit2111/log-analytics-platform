@@ -32,16 +32,22 @@ import { ChartToolTip } from "../components/ChartToolTip";
 import { useDashboardData } from "../hooks/useDashboardData";
 import { getDefaultRangeHours } from "../lib/preferences";
 
+const RANGE_OPTIONS = [
+  [24, "Last 24 hours"],
+  [168, "Last 7 days"],
+  [720, "Last 30 days"],
+  [2160, "Last 90 days"],
+  [43800, "All time"], // ~5 years back
+];
+const RANGE_LABELS = Object.fromEntries(RANGE_OPTIONS);
+const WIDEST_RANGE = RANGE_OPTIONS[RANGE_OPTIONS.length - 1][0];
+
 export default function Dashboard() {
   const [rangeHours, setRangeHours] = useState(getDefaultRangeHours());
   const [rangeOpen, setRangeOpen] = useState(false);
   const { data, loading, error } = useDashboardData(rangeHours);
 
-  const rangeLabel = {
-    24: "Last 24 hours",
-    168: "Last 7 days",
-    720: "Last 30 days",
-  }[rangeHours];
+  const rangeLabel = RANGE_LABELS[rangeHours];
 
   if (loading) {
     return <div className="state-message">Loading dashboard…</div>;
@@ -84,11 +90,7 @@ export default function Dashboard() {
           </button>
           {rangeOpen && (
             <div className="range-menu">
-              {[
-                [24, "Last 24 hours"],
-                [168, "Last 7 days"],
-                [720, "Last 30 days"],
-              ].map(([h, l]) => (
+              {RANGE_OPTIONS.map(([h, l]) => (
                 <div
                   key={h}
                   className={`range-menu-item${h === rangeHours ? " active" : ""}`}
@@ -104,6 +106,20 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {data.trend.length === 0 && rangeHours !== WIDEST_RANGE && (
+        <Card>
+          <p className="mono-muted" style={{ marginBottom: "0.75rem" }}>
+            No logs found in the "{rangeLabel}" window — try a wider range.
+          </p>
+          <button
+            className="btn btn-primary"
+            onClick={() => setRangeHours(WIDEST_RANGE)}
+          >
+            View all time
+          </button>
+        </Card>
+      )}
 
       {/* pulse strip */}
       <Card>
