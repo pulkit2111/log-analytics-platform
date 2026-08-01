@@ -6,11 +6,31 @@ import { THEME_VARS } from "./constants/theme";
 import SearchLogs from "./pages/SearchLogs";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings.jsx";
+import { useState } from "react";
+import { Menu } from "lucide-react";
 
 function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="dashboard" style={THEME_VARS}>
-      <Sidebar />
+      <button
+        className="sidebar-toggle"
+        onClick={() => setSidebarOpen((o) => !o)}
+        aria-label="Toggle navigation"
+      >
+        <Menu size={20} />
+      </button>
+
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <Sidebar isOpen={sidebarOpen} onNavigate={() => setSidebarOpen(false)} />
+
       <main className="main">
         <Routes>
           <Route path="/" element={<Dashboard />} />

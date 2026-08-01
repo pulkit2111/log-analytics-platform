@@ -13,9 +13,9 @@ const NAV_ITEMS = [
   { to: "/settings", label: "Settings", icon: SettingsIcon },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onNavigate }) {
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${isOpen ? " sidebar-open" : ""}`}>
       <div className="brand">
         <div className="brand-dot" />
         <span className="brand-name">LogAnalytics</span>
@@ -26,6 +26,7 @@ export default function Sidebar() {
           key={to}
           to={to}
           end={end}
+          onClick={onNavigate}
           className={({ isActive }) => `nav-item${isActive ? " active" : ""}`}
         >
           <Icon size={17} strokeWidth={1.8} />
