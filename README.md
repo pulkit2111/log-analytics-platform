@@ -1,5 +1,7 @@
 # Log Analytics Platform
 
+![CI](https://github.com/pulkit2111/log-analytics-platform/actions/workflows/ci.yml/badge.svg)
+
 A full-stack log ingestion and analytics platform built to explore real-world backend performance concerns — caching strategy, query optimization, and observable cache behavior — alongside a dashboard for visualizing log volume, severity trends, and error rates.
 
 **Live demo:** [log-analytics-platform.vercel.app](https://log-analytics-platform.vercel.app/)
