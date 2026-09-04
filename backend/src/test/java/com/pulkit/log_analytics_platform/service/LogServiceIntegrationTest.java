@@ -43,9 +43,10 @@ class LogServiceIntegrationTest {
   private LogService logService;
 
   @Test
-  void secondIdenticalSearchIsServedFromCache() {
+  void secondIdenticalSearchIsServedFromCache() throws Exception {
     String service = "auth-service";
     logService.addLogs(List.of(buildLog(service, Log.LogLevel.INFO)));
+    Thread.sleep(200); // let async clear() complete
 
     TimedResult<LogPageResponse> first = logService.searchLogs(service, null, null, null, null, 0, 20, false);
     TimedResult<LogPageResponse> second = logService.searchLogs(service, null, null, null, null, 0, 20, false);
